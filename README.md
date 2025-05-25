@@ -1,6 +1,6 @@
 # Proyecto RCH Algorithm
 
-Este proyecto implementa el algoritmo RCH (Route Choice Heuristic) para la optimización de rutas y cálculo de volúmenes en logística y planificación de transporte.
+Este proyecto implementa el algoritmo RCH para la optimización de carga de contenedores y cálculos de volúmenes en logística.
 
 ## Estructura del Proyecto
 
@@ -41,9 +41,9 @@ pip install -r requirements.txt
 ## Uso
 
 El proyecto incluye varios cuadernos de Jupyter para diferentes propósitos:
-- `reading.ipynb`: Para leer y procesar datos de entrada
-- `fetch_input.ipynb`: Para obtener datos de entrada
-- `carga_dinamica.ipynb`: Para cálculos de carga dinámica
+- `carga_simple.ipynb`: Para leer y procesar datos de entrada y generar la solución de un viaje.
+- `fetch_input.ipynb`: Para obtener datos de entrada de un archivo .xlsx
+- `carga_dinamica.ipynb`: Para cálculos de carga dinámica, donde hay una carga inicial y una segunda carga con partidas que no se han cargado anteriormente.
 
 La funcionalidad principal está implementada en el directorio `RCH_module`, con el algoritmo principal en `RCH.py`.
 
@@ -53,11 +53,10 @@ El proyecto trabaja con archivos Excel que contienen:
 - Datos de Viajes
 - Datos de Partidas
 - Cálculos de volúmenes
-- Parámetros de optimización de rutas
 
 ## Salida
 
-El proyecto genera rutas optimizadas y cálculos de volúmenes para operaciones logísticas, con resultados almacenados en el directorio `soluciones`.
+El proyecto genera cálculos de volúmenes para operaciones logísticas, con resultados almacenados en el directorio `soluciones`.
 
 ## Contribución
 

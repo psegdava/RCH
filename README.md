@@ -1,72 +1,72 @@
-# RCH Algorithm Project
+# Proyecto RCH Algorithm
 
-This project implements the RCH (Route Choice Heuristic) algorithm for route optimization and volume calculation in logistics and transportation planning.
+Este proyecto implementa el algoritmo RCH (Route Choice Heuristic) para la optimización de rutas y cálculo de volúmenes en logística y planificación de transporte.
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 RCH_Algorithm/
-├── RCH_module/           # Main algorithm implementation
-├── input_RCH/           # Input data for RCH calculations
-├── input_total/         # Total input data
-├── viajes_prueba/       # Test trips data
-├── soluciones/          # Solutions directory
-├── pruebas/             # Test directory
-├── not_loaded.xlsx      # Data file for unloaded items
-├── requirements.txt     # Project dependencies
-└── *.ipynb             # Jupyter notebooks for analysis
+├── RCH_module/           # Implementación principal del algoritmo
+├── input_RCH/           # Datos de entrada para cálculos RCH
+├── input_total/         # Datos de entrada totales
+├── viajes_prueba/       # Datos de viajes de prueba
+├── soluciones/          # Directorio de soluciones
+├── pruebas/             # Directorio de pruebas
+├── not_loaded.xlsx      # Archivo de datos para artículos no cargados
+├── requirements.txt     # Dependencias del proyecto
+└── *.ipynb             # Cuadernos de Jupyter para análisis
 ```
 
-## Requirements
+## Requisitos
 
 - Python 3.x
-- See [requirements.txt](requirements.txt) for all dependencies
-- Key dependencies include:
+- Ver [requirements.txt](requirements.txt) para todas las dependencias
+- Dependencias principales incluyen:
   - pandas
   - numpy
   - scikit-learn
   - tensorflow
   - fastai
-  - various data processing and analysis libraries
+  - varias bibliotecas de procesamiento y análisis de datos
 
-## Setup
+## Instalación
 
-1. Clone the repository
-2. Create a virtual environment (recommended)
-3. Install dependencies:
+1. Clonar el repositorio
+2. Crear un entorno virtual (recomendado)
+3. Instalar dependencias:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## Uso
 
-The project includes several Jupyter notebooks for different purposes:
-- `reading.ipynb`: For reading and processing input data
-- `fetch_input.ipynb`: For fetching input data
-- `carga_dinamica.ipynb`: For dynamic loading calculations
+El proyecto incluye varios cuadernos de Jupyter para diferentes propósitos:
+- `reading.ipynb`: Para leer y procesar datos de entrada
+- `fetch_input.ipynb`: Para obtener datos de entrada
+- `carga_dinamica.ipynb`: Para cálculos de carga dinámica
 
-The main functionality is implemented in the `RCH_module` directory, with the core algorithm in `RCH.py`.
+La funcionalidad principal está implementada en el directorio `RCH_module`, con el algoritmo principal en `RCH.py`.
 
-## Input Data
+## Datos de Entrada
 
-The project works with Excel files containing:
-- Viajes (Trips) data
-- Partidas (Shipments) data
-- Volume calculations
-- Route optimization parameters
+El proyecto trabaja con archivos Excel que contienen:
+- Datos de Viajes
+- Datos de Partidas
+- Cálculos de volúmenes
+- Parámetros de optimización de rutas
 
-## Output
+## Salida
 
-The project generates optimized routes and volume calculations for logistics operations, with results stored in the `soluciones` directory.
+El proyecto genera rutas optimizadas y cálculos de volúmenes para operaciones logísticas, con resultados almacenados en el directorio `soluciones`.
 
-## Contributing
+## Contribución
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+1. Fork el repositorio
+2. Crea tu rama de características
+3. Commit tus cambios
+4. Push a la rama
+5. Crea una nueva Pull Request
 
-## License
+## Licencia
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para detalles.

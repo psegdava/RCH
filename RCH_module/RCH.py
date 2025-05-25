@@ -6,10 +6,10 @@ import plotly.graph_objects as go
 import random
 import json
 
-from preprocessing import join_box
-from sorting import sort_boxes
-from packing import load_boxes
-from postprocessing import separate_boxes
+from .preprocessing import join_box
+from .sorting import sort_boxes
+from .packing import load_boxes
+from .postprocessing import separate_boxes
 
 
 def show_boxes(solutions):
@@ -183,4 +183,4 @@ def get_volumes(viaje, load_type=1, file_path=None):
 #get_volumes('VBCN2403418', load_type=2, file_path='input_RCH/primera_VBCN2403418.xlsx')
 #get_volumes('VBCN2403418', load_type=4, file_path='input_RCH/resto_VBCN2403418.xlsx')   
 viaje = 'VBCN2403750'
-print(get_volumes(viaje, load_type=1, file_path=f'viajes_prueba/test_{viaje}.xlsx'))
+#print(get_volumes(viaje, load_type=1, file_path=f'viajes_prueba/test_{viaje}.xlsx'))

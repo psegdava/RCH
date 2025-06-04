@@ -1,4 +1,20 @@
-def separate_boxes(solution, hmap):
+from typing import List, Tuple, Dict
+
+
+def separate_boxes(
+    solution: List[Tuple[str, Tuple[int, int, int, int, int, int]]],
+    hmap: Dict[str, List[Tuple[str, Tuple[int, int, int, int, int, int]]]]
+):
+    """
+    This function separates the groups of boxes created in preprocessing into single boxes.
+
+    Args:
+        solution (List[Tuple[str, Tuple[int, int, int, int, int, int]]]): The list of solutions
+            where each solution is a tuple containing an identifier and a position tuple.
+        hmap (Dict[str, List[Tuple[str, Tuple[int, int, int, int, int, int]]]]): A hashmap where
+            keys are identifiers and values are lists of tuples containing box identifiers and
+            their positions.
+    """
     # This function aims to separate the groups of boxes created in preprocessing into single boxes
     final_solution = []
 
@@ -10,16 +26,14 @@ def separate_boxes(solution, hmap):
 
         suffix = id[0][-2:len(id[0])]
         if id in hmap:
-            
             # If the solution is in the hmap we iterate over local solution contained in the hmap of where each box is located
             # relative to the other boxes in its group
             for box, position in hmap[id]:
-                
                 # We have different cases of how the local solution gets added to the global solution, if the global solution
                 # has a negative width, it means it has been placed on the right wall so the width of individual boxes
                 # will also be negative. We also have the case where we only want to change the height of the box, these boxes have an added
                 # _H to the id to make them identifiable.
-                if suffix == '_H':
+                if suffix == "_H":
                     new_position = (sol[0], sol[1], position[2], sol[3], sol[4], position[5])
 
                 elif sol[4] < 0:
@@ -30,9 +44,9 @@ def separate_boxes(solution, hmap):
 
                 else:
                     new_position = (position[0]+sol[0], position[1]+sol[1], position[2]+sol[2], position[3], position[4], position[5])
-                    
+
                 new_sol = (box, new_position)
-                
+
                 solution.append(new_sol)
 
                 if box not in hmap:
@@ -41,4 +55,3 @@ def separate_boxes(solution, hmap):
             final_solution.append(i)
 
     return final_solution
-        

@@ -1,56 +1,18 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
 import random
 import json
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 from .preprocessing import join_box
 from .sorting import sort_boxes
 from .packing import load_boxes
 from .postprocessing import separate_boxes
+from .rendering import show_boxes
 
 
-def show_boxes(solutions: List[Tuple[str, List[float]]]) -> None:
-    """
-    Visualizes the loaded boxes in a 3D plot in a web browser using Plotly.
-
-    Args:
-        solutions (list): A list of tuples where each tuple contains
-            an ID and a box solution. Each box solution is a list
-            containing the position (x, y, z) and dimensions (length, width, height).
-    """
-    fig = go.Figure()
-    for id, box_solution in solutions:
-        x, y, z = box_solution[0:3]
-        length, width, height = box_solution[3:6]
-
-        hover_text = f"{id}<br>Dimensions: {length}x{width}x{height}<br>Position: ({x}, {y}, {z})"
-        fig.add_trace(go.Mesh3d(
-            x=[x, x + length, x + length, x, x, x + length, x + length, x],
-            y=[y, y, y + width, y + width, y, y, y + width, y + width],
-            z=[z, z, z, z, z + height, z + height, z + height, z + height],
-            i=[7, 0, 0, 0, 4, 4, 6, 1, 4, 0, 3, 6],
-            j=[3, 4, 1, 2, 5, 6, 5, 2, 0, 1, 6, 3],
-            k=[0, 7, 2, 3, 6, 7, 1, 6, 5, 5, 7, 2],
-            name=f"{id}",
-            hovertext=hover_text
-        ))
-
-        # Set layout properties
-        fig.update_layout(
-            scene=dict(
-                xaxis_title="X",
-                yaxis_title="Y",
-                zaxis_title="Z",
-                aspectmode="data"
-                )
-        )
-
-    # Show the interactive plot
-    fig.show(renderer="browser")
+NUM_SOLUTIONS = 40000
+SHOWN_SOLUTIONS = 5
 
 
 def RCH(
@@ -184,7 +146,7 @@ def get_volumes(viaje, load_type=1, file_path=None):
 
     # For each solution we store the solution and the boxes not loaded in a dictionary with the scores as the key
     all_solutions = {}
-    for i in range(15000):
+    for i in range(NUM_SOLUTIONS):
         pctg_volume, pctg_floor, x_axis, solution, not_loaded, PPs = RCH(container_dimensions, df, hmap, load_type, viaje)
         all_solutions[(pctg_volume, pctg_floor, x_axis)] = (solution, not_loaded, PPs)
 
@@ -205,11 +167,9 @@ def get_volumes(viaje, load_type=1, file_path=None):
         sorted_keys = x_sorted_keys
 
     # We visualize the best solutions based on whichever score we prefer
-    for i in range(5):
-        print(f"\nSolution {i+1} with score {sorted_keys[i]} and {len(all_solutions[sorted_keys[i]][0])} not loaded boxes:")
-        show_boxes(all_solutions[sorted_keys[i]][0])
-        print("Scores: ", sorted_keys[i])
-        print("Not loaded: ", len(all_solutions[sorted_keys[i]][1]))
+    for i in range(SHOWN_SOLUTIONS):
+        print(f"Solution {i+1} with score {sorted_keys[i]} and {len(all_solutions[sorted_keys[i]][1])} not loaded boxes:")
+        show_boxes(all_solutions[sorted_keys[i]][0], idx=i+1)
 
     # Calculate the average loaded volume
     all_pctg = [x[0] for x in floor_sorted_keys]

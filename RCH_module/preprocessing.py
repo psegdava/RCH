@@ -1,7 +1,6 @@
 from itertools import combinations
 from typing import List, Tuple, Dict
 import pandas as pd
-import random
 
 
 def join_box(

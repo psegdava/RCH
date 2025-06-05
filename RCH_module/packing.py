@@ -482,6 +482,13 @@ def load_boxes(
         sorted_PPs = sort_PPs(box, PPs, load_type, solutions)
         solution = None
 
+        # # # print("#####################################")
+        # # # print(box)
+        # # # print(sorted_PPs)
+        # # # print("#####################################")
+        # # # print(solutions)
+        # # # print("#####################################")
+
         # Loop over each PP to try to place the box in it
         for pp in sorted_PPs:
             x, y, z = pp[0:3]

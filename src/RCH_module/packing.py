@@ -442,7 +442,7 @@ def load_boxes(
     # If we want to continue from a previous load, we will load the JSON file with the previous solutions
     if load_type == 4:
         # Load the JSON file
-        with open(f"soluciones/output_{viaje}.json", "r") as file:
+        with open(f"data/outputs/soluciones/output_{viaje}.json", "r") as file:
             loaded_output = json.load(file)
 
         # Convert solutions lists back to tuples

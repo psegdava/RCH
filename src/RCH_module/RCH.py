@@ -185,14 +185,14 @@ def get_volumes(viaje, load_type=1, file_path=None):
         columns=["LargoCm", "AnchoCm", "AltoCm", "Prioridad", "Remontable"],
     )
     not_loaded_best.index.name = "Partida"
-    not_loaded_best.to_excel("not_loaded.xlsx")
+    not_loaded_best.to_excel("data/outputs/not_loaded.xlsx")
 
     # If we are uing load_type 2 we save the solution as a json file to use it later
     if load_type == 2:
         output = {}
         output["solution"] = all_solutions[x_sorted_keys[0]][0]
         output["PPs"] = all_solutions[x_sorted_keys[0]][2]
-        with open(f"soluciones/output_{viaje}.json", "w") as file:
+        with open(f"data/outputs/soluciones/output_{viaje}.json", "w") as file:
             json.dump(output, file)
 
     # DUDA 6: Por que estamos devolviendo los params de
@@ -200,8 +200,8 @@ def get_volumes(viaje, load_type=1, file_path=None):
     return avg_pctg, floor_sorted_keys[0], volume_sorted_keys[0], len(not_loaded_best)
 
 
-# get_volumes("VBCN2403418", load_type=2, file_path="input_RCH/primera_VBCN2403418.xlsx")
-# get_volumes("VBCN2403418", load_type=4, file_path="input_RCH/resto_VBCN2403418.xlsx")
+# get_volumes("VBCN2403418", load_type=2, file_path="data/inputs/input_RCH/primera_VBCN2403418.xlsx")
+# get_volumes("VBCN2403418", load_type=4, file_path="data/inputs/input_RCH/resto_VBCN2403418.xlsx")
 viaje = "VBCN2403750"
 viaje = "VBCN2501568"
-# print(get_volumes(viaje, load_type=1, file_path=f"viajes_prueba/test_{viaje}.xlsx"))
+# print(get_volumes(viaje, load_type=1, file_path=fdata/inputs/viajes_prueba/test_{viaje}.xlsx"))

@@ -21,15 +21,15 @@ def sort_boxes(
     # priority (box[3]) and then by volume
     sorted_boxes = dict(sorted(boxes.items(), key=lambda x: (x[1][2], x[1][0]), reverse=True))
 
-    # # DUDA 1: El comentario dice que se ordena por prioridad y volumen, pero el código no es así
-    # # ¿No debería de ser de esta manera?
-    # sorted_boxes = dict(
-    #     sorted(
-    #         boxes.items(),
-    #         key=lambda item: (item[1][3], item[1][0] * item[1][1] * item[1][2]),
-    #         reverse=True,
-    #     )
-    # )
+    # DUDA 1: El comentario dice que se ordena por prioridad y volumen, pero el código no es así
+    # ¿No debería de ser de esta manera?
+    sorted_boxes = dict(
+        sorted(
+            boxes.items(),
+            key=lambda item: (item[1][3], item[1][0] * item[1][1] * item[1][2]),
+            reverse=True,
+        )
+    )
     final_order = {}
 
     # Second step is adding some randomization to the order, if two boxes
@@ -51,7 +51,7 @@ def sort_boxes(
 
             # DUDA 2: Aqui no se está usando una probabilidad de 0.5, se está usando una probabilidad de 0.7
             # Check if the ratio of volumes is within 30% and the a probability of 0.5
-            if 0.7 <= vol1 / vol2 and vol1 / vol2 <= 1.3 and r < 0.7 and prio1 == prio2:
+            if 0.7 <= vol1 / vol2 and vol1 / vol2 <= 1.3 and r < 0.5 and prio1 == prio2:
                 final_order[sorted_list[j][0]] = sorted_list[j][1]
                 final_order[sorted_list[i][0]] = sorted_list[i][1]
             else:

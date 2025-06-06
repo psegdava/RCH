@@ -39,4 +39,4 @@ def show_boxes(solutions: List[Tuple[Tuple[str, str], List[int]]], idx: int = 1)
         )
 
     # Show the interactive plot
-    fig.write_html(f"solutions/solution_{idx}.html", auto_open=True)
+    fig.write_html(f"data/outputs/graphic_display/solution_{idx}.html", auto_open=True)

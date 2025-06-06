@@ -2,23 +2,24 @@ import pandas as pd
 import numpy as np
 import random
 import json
-from typing import List, Tuple
+from tqdm import tqdm
+from typing import List, Tuple, Dict
 
 from .preprocessing import join_box
 from .sorting import sort_boxes
 from .packing import load_boxes
-from .postprocessing import separate_boxes
+from .postprocessing import separate_boxes, separate_not_loaded
 from .rendering import show_boxes
 
 
-NUM_SOLUTIONS = 40000
+NUM_SOLUTIONS = 15000
 SHOWN_SOLUTIONS = 5
 
 
 def RCH(
     container_dimensions: Tuple[int, int, int],
     df: pd.DataFrame,
-    hmap: dict,
+    hmap: Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]],
     load_type: int,
     viaje: str,
 ) -> Tuple[float, float, float, List[Tuple[str, List[float]]], List[str], List[str]]:
@@ -30,7 +31,8 @@ def RCH(
             (length, width, height).
         df (pd.DataFrame): DataFrame containing box data with columns "Partida", "Expedicion",
             "LargoCm", "AnchoCm", "AltoCm", "Remontable".
-        hmap (dict): A dictionary for handling box separation.
+        hmap (Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]):
+            A hashmap where keys are tuples of identifiers and values are lists of tuples containing box identifiers
         load_type (int): The type of loading strategy to use.
         viaje (str): The trip code.
 
@@ -91,6 +93,7 @@ def RCH(
 
     # Separate the boxes for visualization
     final_solution = separate_boxes(solution, hmap)
+    not_loaded = separate_not_loaded(not_loaded, hmap)
     final_solution = list(dict.fromkeys(final_solution))
 
     used_volume = 0
@@ -146,7 +149,7 @@ def get_volumes(viaje, load_type=1, file_path=None):
 
     # For each solution we store the solution and the boxes not loaded in a dictionary with the scores as the key
     all_solutions = {}
-    for i in range(NUM_SOLUTIONS):
+    for i in tqdm(range(NUM_SOLUTIONS), desc="Generating solutions"):
         pctg_volume, pctg_floor, x_axis, solution, not_loaded, PPs = RCH(container_dimensions, df, hmap, load_type, viaje)
         all_solutions[(pctg_volume, pctg_floor, x_axis)] = (solution, not_loaded, PPs)
 

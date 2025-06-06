@@ -5,7 +5,7 @@ import pandas as pd
 
 def join_box(
     df: pd.DataFrame, container_dimensions: Tuple[int, int, int]
-) -> Tuple[pd.DataFrame, Dict[str, List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]]]]:
+) -> Tuple[pd.DataFrame, Dict[str, List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]]:
     """
     Joins boxes based on their dimensions and stackability, considering container dimensions and tolerances.
 
@@ -14,7 +14,7 @@ def join_box(
         container_dimensions (Tuple[int, int, int]): Dimensions of the container (length, width, height).
 
     Returns:
-        Tuple[pd.DataFrame, Dict[str, List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]]]]:
+        Tuple[pd.DataFrame, Dict[str, List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]]:
             - Updated DataFrame with combined boxes.
             - Hash map with box combinations and their dimensions for visualization.
     """
@@ -69,8 +69,8 @@ def join_box(
 
             # We add the _H suffix so we can then know to only change the height for visualization
             hmap_entry = [
-                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm)),
-                ((box2.Partida, box2.Expedicion), (0, 0, box1.AltoCm, box2.LargoCm, box2.AnchoCm, box2.AltoCm))
+                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm, 2, box1.Remontable)),
+                ((box2.Partida, box2.Expedicion), (0, 0, box1.AltoCm, box2.LargoCm, box2.AnchoCm, box2.AltoCm, 2, box2.Remontable))
             ]
             hmap[(box1.Partida + "/" + box2.Partida + "_H", box1.Expedicion)] = hmap_entry
 
@@ -101,8 +101,8 @@ def join_box(
 
             # We add the _H suffix so we can then know to only change the height for visualization
             hmap_entry = [
-                ((box2.Partida, box2.Expedicion), (0, 0, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm)),
-                ((box1.Partida, box1.Expedicion), (0, 0, box2.AltoCm, box1.LargoCm, box1.AnchoCm, box1.AltoCm))
+                ((box2.Partida, box2.Expedicion), (0, 0, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm, 2, box2.Remontable)),
+                ((box1.Partida, box1.Expedicion), (0, 0, box2.AltoCm, box1.LargoCm, box1.AnchoCm, box1.AltoCm, 2, box1.Remontable))
             ]
             hmap[(box2.Partida + "/" + box1.Partida + "_H", box2.Expedicion)] = hmap_entry
 
@@ -149,8 +149,8 @@ def join_box(
 
             # Create the hash map entry which has the same structure as the solutions to ease visualization
             hmap_entry = [
-                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm)),
-                ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm))
+                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm, 2, box1.Remontable)),
+                ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm, 2, box2.Remontable))
             ]
             hmap[(box1.Partida + "/" + box2.Partida + "_W", box1.Expedicion)] = hmap_entry
 
@@ -182,8 +182,8 @@ def join_box(
                 "Volumen": box1.Volumen + box2.Volumen,
             }
             hmap_entry = [
-                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm)),
-                ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.AnchoCm, box2.LargoCm, box2.AltoCm))
+                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm, 2, box1.Remontable)),
+                ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.AnchoCm, box2.LargoCm, box2.AltoCm, 2, box2.Remontable))
             ]
             hmap[(box1.Partida + "/" + box2.Partida + "_W", box1.Expedicion)] = hmap_entry
 
@@ -213,8 +213,8 @@ def join_box(
                 "Volumen": box1.Volumen + box2.Volumen,
             }
             hmap_entry = [
-                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.AnchoCm, box1.LargoCm, box1.AltoCm)),
-                ((box2.Partida, box2.Expedicion), (0, box1.LargoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm))
+                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.AnchoCm, box1.LargoCm, box1.AltoCm, 2, box1.Remontable)),
+                ((box2.Partida, box2.Expedicion), (0, box1.LargoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm, 2, box2.Remontable))
             ]
             hmap[(box1.Partida + "/" + box2.Partida + "_W", box1.Expedicion)] = hmap_entry
 
@@ -244,8 +244,8 @@ def join_box(
                 "Volumen": box1.Volumen + box2.Volumen,
             }
             hmap_entry = [
-                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.AnchoCm, box1.LargoCm, box1.AltoCm)),
-                ((box2.Partida, box2.Expedicion), (0, box1.LargoCm, 0, box2.AnchoCm, box2.LargoCm, box2.AltoCm))
+                ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.AnchoCm, box1.LargoCm, box1.AltoCm, 2, box1.Remontable)),
+                ((box2.Partida, box2.Expedicion), (0, box1.LargoCm, 0, box2.AnchoCm, box2.LargoCm, box2.AltoCm, 2, box2.Remontable))
             ]
             hmap[(box1.Partida + "/" + box2.Partida + "_W", box1.Expedicion)] = hmap_entry
 
@@ -326,9 +326,9 @@ def join_box(
 
                 # Generate hashmap entry
                 hmap_entry = [
-                    ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm)),
-                    ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm)),
-                    ((box3.Partida, box3.Expedicion), (0, box1.AnchoCm+box2.AnchoCm, 0, box3.LargoCm, box3.AnchoCm, box3.AltoCm))
+                    ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm, 2, box1.Remontable)),
+                    ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm, 2, box2.Remontable)),
+                    ((box3.Partida, box3.Expedicion), (0, box1.AnchoCm + box2.AnchoCm, 0, box3.LargoCm, box3.AnchoCm, box3.AltoCm, 2, box3.Remontable))
                 ]
                 hmap[(box1.Partida + "/" + box2.Partida + "/" + box3.Partida + "_W", box1.Expedicion)] = hmap_entry
 

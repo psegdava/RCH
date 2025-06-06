@@ -2,21 +2,21 @@ from typing import List, Tuple, Dict
 
 
 def separate_boxes(
-    solution: List[Tuple[str, Tuple[int, int, int, int, int, int]]],
-    hmap: Dict[str, List[Tuple[str, Tuple[int, int, int, int, int, int]]]]
-) -> List[Tuple[str, Tuple[int, int, int, int, int, int]]]:
+    solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]],
+    hmap: Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]
+) -> List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]]:
     """
     This function separates the groups of boxes created in preprocessing into single boxes.
 
     Args:
-        solution (List[Tuple[str, Tuple[int, int, int, int, int, int]]]): The list of solutions
-            where each solution is a tuple containing an identifier and a position tuple.
-        hmap (Dict[str, List[Tuple[str, Tuple[int, int, int, int, int, int]]]]): A hashmap where
-            keys are identifiers and values are lists of tuples containing box identifiers and
+        solution (List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]]): A list of
+            solutions where each solution is a tuple containing an identifier and a position tuple.
+        hmap (Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]):
+            A hashmap keys are identifiers and values are lists of tuples containing box identifiers and
             their positions.
 
     Returns:
-        List[Tuple[str, Tuple[int, int, int, int, int, int]]]: A list of final solutions where
+        List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]]: A list of final solutions where
             each solution is a tuple containing an identifier and its absolute position.
     """
     # This function aims to separate the groups of boxes created in preprocessing into single boxes
@@ -84,3 +84,46 @@ def separate_boxes(
             final_solution.append(i)
 
     return final_solution
+
+
+def separate_not_loaded(
+    not_loaded: Dict[Tuple[str, str], List[int]],
+    hmap: Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]
+) -> Dict[Tuple[str, str], List[int]]:
+    """
+    This function separates the not loaded boxes into single boxes.
+
+    Args:
+        not_loaded (Dict[Tuple[str, str], List[int]]): A dictionary where keys are tuples of identifiers
+            and values are lists of (length, width, height, priority, stackable).
+        hmap (Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]):
+            A hashmap where keys are identifiers and values are lists of tuples containing box identifiers
+            and their positions.
+
+    Returns:
+        Dict[Tuple[str, str], List[int]]: A list of final not loaded boxes where each box is represented
+            by a tuple containing its identifier and its absolute position.
+    """
+
+    final_not_loaded = {}
+    items_not_loaded = list(not_loaded.items())
+    while items_not_loaded:
+        # We get the next item from the list
+        id, _ = items_not_loaded.pop(0)
+        # If the box is in the hmap we have to save the individual boxes
+        if id in hmap:
+            # We iterate over the boxes in the hmap[id] and their relative positions
+            for box, pos in hmap[id]:
+                # If the resulting box is not a combination of other boxes
+                if box not in hmap:
+                    # We add it to the final not loaded boxes
+                    new_not_loaded = [pos[3], pos[4], pos[5], pos[6], pos[7]]
+                    final_not_loaded[box] = new_not_loaded
+                else:
+                    # If the box is a combination of other boxes we add it to the items not loaded
+                    items_not_loaded.append((box, pos))
+        else:
+            # If the box is not in the hmap we add it to the final not loaded boxes
+            final_not_loaded[id] = not_loaded[id]
+
+    return final_not_loaded

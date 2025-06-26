@@ -21,7 +21,8 @@ def RCH(
     df: pd.DataFrame,
     hmap: Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]],
     load_type: int,
-    viaje: str,
+    solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
+    PPs: List[Tuple[int, int, int, int, int, int, str]] = None,
 ) -> Tuple[float, float, float, List[Tuple[str, List[float]]], List[str], List[str]]:
     """
     Implements the RCH algorithm to load boxes into a container.
@@ -34,7 +35,10 @@ def RCH(
         hmap (Dict[Tuple[str, str], List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int, int, int]]]]):
             A hashmap where keys are tuples of identifiers and values are lists of tuples containing box identifiers
         load_type (int): The type of loading strategy to use.
-        viaje (str): The trip code.
+        solution (List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]], optional): Initial solution to start packing from.
+            Defaults to None.
+        PPs (List[Tuple[int, int, int, int, int, int, str]], optional): List of potential points (PPs) to use in the loading process.
+            Defaults to None.
 
     Returns:
 
@@ -87,7 +91,7 @@ def RCH(
     sorted_boxes = sort_boxes(boxes)
 
     # Packing step of the algorithm where the solution is generated
-    solution, not_loaded, PPs = load_boxes(sorted_boxes, container_dimensions, load_type, viaje)
+    solution, not_loaded, PPs = load_boxes(sorted_boxes, container_dimensions, load_type, solution, PPs)
 
     solution = [x for x in solution if x is not False]
 
@@ -121,28 +125,13 @@ def RCH(
     return (pctg_volume, pctg_floor, x_axis, final_solution, not_loaded, PPs)
 
 
-def get_volumes(viaje, load_type=1, file_path=None):
-    """
-    There are 4 types of load type:
-      1. Maximize volume and floor
-      2. Minimize X axis
-      3. Maximize only floor
-      4. Resume loading from previous solution
-
-    Args:
-        viaje (str): The trip code.
-        load_type (int): The type of loading strategy to use.
-        file_path (str): The path to the input Excel file containing box data.
-
-    Returns:
-        tuple: A tuple containing the average percentage of loaded volume,
-            the best floor score, the best volume score, and the number of boxes not loaded.
-    """
-    # Set the container dimensions
-    container_dimensions = (1350, 246, 259)
-
-    # Read the input excel
-    df = pd.read_excel(file_path)
+def organize_loading(
+    container_dimensions: Tuple[int, int, int],
+    df: pd.DataFrame,
+    load_type: int = 1,
+    solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
+    PPs: List[Tuple[int, int, int, int, int, int, str]] = None,
+    ):
 
     # Preprocess the boxes to generate bigger boxes, we also generate a hmap to be able to separate the boxes later
     df, hmap = join_box(df, container_dimensions)
@@ -150,7 +139,7 @@ def get_volumes(viaje, load_type=1, file_path=None):
     # For each solution we store the solution and the boxes not loaded in a dictionary with the scores as the key
     all_solutions = {}
     for i in tqdm(range(NUM_SOLUTIONS), desc="Generating solutions"):
-        pctg_volume, pctg_floor, x_axis, solution, not_loaded, PPs = RCH(container_dimensions, df, hmap, load_type, viaje)
+        pctg_volume, pctg_floor, x_axis, solution, not_loaded, PPs = RCH(container_dimensions, df, hmap, load_type, solution, PPs)
         all_solutions[(pctg_volume, pctg_floor, x_axis)] = (solution, not_loaded, PPs)
 
     # We sort the keys depending on which score we want to minimize/maximize
@@ -169,35 +158,83 @@ def get_volumes(viaje, load_type=1, file_path=None):
     elif load_type == 4:
         sorted_keys = x_sorted_keys
 
+    return all_solutions, sorted_keys
+
+
+def get_volumes(viaje, load_type=1, file_path=None, save_path="data/outputs/soluciones/"):
+    """
+    There are 4 types of load type:
+      1. Maximize volume and floor
+      2. Minimize X axis
+      3. Maximize only floor
+      4. Resume loading from previous solution
+
+    Args:
+        viaje (str): The trip code.
+        load_type (int): The type of loading strategy to use.
+        file_path (str): The path to the input Excel file containing box data.
+
+    Returns:
+        tuple: A tuple containing the average percentage of loaded volume, the best volume score,
+            and the number of boxes not loaded.
+    """
+    # Set the container dimensions
+    container_dimensions = (1350, 246, 259)
+
+    # Read the input excel
+    df = pd.read_excel(file_path)
+
+    # If we are loading from a previous solution we load the json file
+    if load_type == 4:
+        # Load the JSON file
+        with open(f"{save_path}/output_{viaje}.json", "r") as file:
+            loaded_output = json.load(file)
+
+        # Convert solutions lists back to tuples
+        solutions = loaded_output["solution"]
+        solutions = [(tuple(item[0]), tuple(item[1])) for item in solutions]
+
+        # Convert the potential points (PPs) back to tuples
+        PPs = loaded_output["PPs"]
+        PPs = [tuple(item) for item in PPs]
+        all_solutions, sorted_keys = organize_loading(container_dimensions, df, load_type, solutions, PPs)
+
+    else:
+        all_solutions, sorted_keys = organize_loading(container_dimensions, df, load_type)
+
     # We visualize the best solutions based on whichever score we prefer
     for i in range(SHOWN_SOLUTIONS):
         print(f"Solution {i+1} with score {sorted_keys[i]} and {len(all_solutions[sorted_keys[i]][1])} not loaded boxes:")
         show_boxes(all_solutions[sorted_keys[i]][0], idx=i+1)
 
     # Calculate the average loaded volume
-    all_pctg = [x[0] for x in floor_sorted_keys]
+    all_pctg = [x[0] for x in sorted_keys]
     avg_pctg = np.mean(all_pctg)
 
     # Create an excel file with the boxes that haven't been loaded
     not_loaded_best = pd.DataFrame.from_dict(
-        all_solutions[volume_sorted_keys[0]][1],
+        all_solutions[sorted_keys[0]][1],
         orient="index",
         columns=["LargoCm", "AnchoCm", "AltoCm", "Prioridad", "Remontable"],
     )
     not_loaded_best.index.name = "Partida"
     not_loaded_best.to_excel("data/outputs/not_loaded.xlsx")
 
-    # If we are uing load_type 2 we save the solution as a json file to use it later
+    # If we are using load_type 2 we save the solution as a json file to use it later
     if load_type == 2:
         output = {}
-        output["solution"] = all_solutions[x_sorted_keys[0]][0]
-        output["PPs"] = all_solutions[x_sorted_keys[0]][2]
+        output["solution"] = all_solutions[sorted_keys[0]][0]
+        output["PPs"] = all_solutions[sorted_keys[0]][2]
         with open(f"data/outputs/soluciones/output_{viaje}.json", "w") as file:
             json.dump(output, file)
 
-    # DUDA 6: Por que estamos devolviendo los params de
-    # la solucion que pasamos y nos de las mejores?
-    return avg_pctg, floor_sorted_keys[0], volume_sorted_keys[0], len(not_loaded_best)
+    # else:
+    #     output = {}
+    #     output["solution"] = all_solutions[volume_sorted_keys[0]][0]
+    #     with open(save_path + f"output_{viaje}.json", "w") as file:
+    #         json.dump(output, file)
+
+    return avg_pctg, sorted_keys[0], len(not_loaded_best)
 
 
 # get_volumes("VBCN2403418", load_type=2, file_path="data/inputs/input_RCH/primera_VBCN2403418.xlsx")

@@ -93,7 +93,7 @@ def test_saved_partidas(file_path: str) -> dict:
     """
     codigo_viaje = file_path.split("_")[-1].split(".")[0]  # Extract the viaje code from the filename
     print(f"\nTesting {codigo_viaje}...")
-    avg_pctg, _, _, not_loaded = get_volumes(codigo_viaje, load_type=2, file_path=file_path)
+    avg_pctg, _, not_loaded = get_volumes(codigo_viaje, load_type=2, file_path=file_path)
     print(f"Average percentage of loaded volume for {codigo_viaje}: {avg_pctg:.2f}%")
     print(f"Not loaded partidas for {codigo_viaje}: {not_loaded}")
 
@@ -115,7 +115,7 @@ def test_all_saved_partidas(dir: str = "data/inputs/test_data/") -> None:
             file_path = os.path.join(dir, file)
             codigo_viaje = file.split("_")[1].split(".")[0]  # Extract the viaje code from the filename
             print(f"\nTesting {codigo_viaje}...")
-            avg_pctg, _, _, _ = get_volumes(codigo_viaje, load_type=2, file_path=file_path)
+            avg_pctg, _, _ = get_volumes(codigo_viaje, load_type=2, file_path=file_path)
             results[codigo_viaje] = avg_pctg
 
     return results

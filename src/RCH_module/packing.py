@@ -414,7 +414,8 @@ def load_boxes(
     boxes: Dict[Tuple[str, str], List[int]],
     container_dimensions: Tuple[int, int, int],
     load_type: int,
-    viaje: str
+    solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
+    PPs: List[Tuple[int, int, int, int, int, int, str]] = None,
 ) -> Tuple[List[Tuple[str, Tuple[int, int, int, int, int, int]]], Dict[Tuple[str, str], List[int]], List[Tuple[int, int, int, int, int]]]:
     """
     Load boxes into a container based on their dimensions and the available space.
@@ -429,29 +430,26 @@ def load_boxes(
         container_dimensions (Tuple[int, int, int]): A tuple representing the dimensions of the container
             (length, width, height).
         load_type (int): An integer representing the type of load being processed.
-        viaje (str): A string representing the voyage identifier.
+        solution (List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]], optional): A list of previously loaded boxes.
+            It has to be provided if load_type is 4, which indicates that we are continuing from a previous load.
+        PPs (List[Tuple[int, int, int, int, int, int, str]], optional): A list of potential points where boxes can be placed.
+            It has to be provided if load_type is 4, which indicates that we are continuing from a previous load.
 
     Returns:
         Tuple[List[Tuple[str, Tuple[int, int, int, int, int, int]]], Dict[Tuple[str, str], List[int]], List[Tuple[int, int, int, int, int]]]:
             - A list of tuples where each tuple contains a box identifier and its position in the container.
             - A dictionary of boxes that could not be loaded into the container.
             - A list of potential points (PPs) representing available space in the container.
+
+    Raises:
+        ValueError: If load_type is 4 and either solution or PPs is not provided, as they are required to continue from a previous load.
     """
     container_length, container_width, container_height = container_dimensions
 
     # If we want to continue from a previous load, we will load the JSON file with the previous solutions
     if load_type == 4:
-        # Load the JSON file
-        with open(f"data/outputs/soluciones/output_{viaje}.json", "r") as file:
-            loaded_output = json.load(file)
-
-        # Convert solutions lists back to tuples
-        solutions = loaded_output["solution"]
-        solutions = [(tuple(item[0]), tuple(item[1])) for item in solutions]
-
-        # Convert the potential points (PPs) back to tuples
-        PPs = loaded_output["PPs"]
-        PPs = [tuple(item) for item in PPs]
+        if solution is None or PPs is None:
+            raise ValueError("Solution and PPs must be provided for load type 4.")
 
         last_box = max(solutions, key=lambda x: x[1][0] + x[1][3])[1]
         x_axis = last_box[0] + last_box[3]

@@ -414,9 +414,9 @@ def load_boxes(
     boxes: Dict[Tuple[str, str], List[int]],
     container_dimensions: Tuple[int, int, int],
     load_type: int,
-    solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
+    solutions: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
     PPs: List[Tuple[int, int, int, int, int, int, str]] = None,
-) -> Tuple[List[Tuple[str, Tuple[int, int, int, int, int, int]]], Dict[Tuple[str, str], List[int]], List[Tuple[int, int, int, int, int]]]:
+) -> Tuple[List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]], Dict[Tuple[str, str], List[int]], List[Tuple[int, int, int, int, int]]]:
     """
     Load boxes into a container based on their dimensions and the available space.
     This function attempts to place boxes in the container, respecting the dimensions and
@@ -448,7 +448,7 @@ def load_boxes(
 
     # If we want to continue from a previous load, we will load the JSON file with the previous solutions
     if load_type == 4:
-        if solution is None or PPs is None:
+        if solutions is None or PPs is None:
             raise ValueError("Solution and PPs must be provided for load type 4.")
 
         last_box = max(solutions, key=lambda x: x[1][0] + x[1][3])[1]

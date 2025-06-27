@@ -53,8 +53,6 @@ def join_box(
             and box1.AltoCm + box2.AltoCm < container_height
         ):
             new_box = {
-                "CodigoViaje": box1.CodigoViaje,
-                "FechaCargaContenedor": box1.FechaCargaContenedor,
                 "FechaEntradaAlmacen": box1.FechaEntradaAlmacen,
                 "Expedicion": box1.Expedicion,
                 "Partida": box1.Partida + "/" + box2.Partida + "_H",
@@ -66,6 +64,11 @@ def join_box(
                 "Remontable": box2.Remontable,
                 "Volumen": box1.Volumen + box2.Volumen,
             }
+            # Only add the CodigoViaje if it exists in the original box
+            if 'CodigoViaje' in df.columns:
+                new_box["CodigoViaje"] = box1.CodigoViaje
+            if 'FechaCargaContenedor' in df.columns:
+                new_box["FechaCargaContenedor"] = box1.FechaCargaContenedor
 
             # We add the _H suffix so we can then know to only change the height for visualization
             hmap_entry = [
@@ -85,8 +88,6 @@ def join_box(
             and box1.AltoCm + box2.AltoCm < container_height
         ):
             new_box = {
-                "CodigoViaje": box2.CodigoViaje,
-                "FechaCargaContenedor": box2.FechaCargaContenedor,
                 "FechaEntradaAlmacen": box2.FechaEntradaAlmacen,
                 "Expedicion": box2.Expedicion,
                 "Partida": box2.Partida + "/" + box1.Partida + "_H",
@@ -98,6 +99,13 @@ def join_box(
                 "Remontable": box1.Remontable,
                 "Volumen": box1.Volumen + box2.Volumen,
             }
+
+            # Only add the CodigoViaje if it exists in the original box
+            if 'CodigoViaje' in df.columns:
+                new_box["CodigoViaje"] = box2.CodigoViaje
+            if 'FechaCargaContenedor' in df.columns:
+                new_box["FechaCargaContenedor"] = box2.FechaCargaContenedor
+
 
             # We add the _H suffix so we can then know to only change the height for visualization
             hmap_entry = [
@@ -133,8 +141,6 @@ def join_box(
             and abs(box1.AltoCm - box2.AltoCm) < height_tolerance
         ):
             new_box = {
-                "CodigoViaje": box1.CodigoViaje,
-                "FechaCargaContenedor": max(box1.FechaCargaContenedor, box2.FechaCargaContenedor),
                 "FechaEntradaAlmacen": max(box1.FechaEntradaAlmacen, box2.FechaEntradaAlmacen),
                 "Expedicion": box1.Expedicion,
                 "Partida": box1.Partida + "/" + box2.Partida + "_W",
@@ -146,6 +152,12 @@ def join_box(
                 "Remontable": min(box1.Remontable, box2.Remontable),
                 "Volumen": box1.Volumen + box2.Volumen,
             }
+
+            # Only add the CodigoViaje if it exists in the original box
+            if 'CodigoViaje' in df.columns:
+                new_box["CodigoViaje"] = box1.CodigoViaje
+            if 'FechaCargaContenedor' in df.columns:
+                new_box["FechaCargaContenedor"] = max(box1.FechaCargaContenedor, box2.FechaCargaContenedor)
 
             # Create the hash map entry which has the same structure as the solutions to ease visualization
             hmap_entry = [
@@ -168,8 +180,6 @@ def join_box(
             and abs(box1.AltoCm - box2.AltoCm) < height_tolerance
         ):
             new_box = {
-                "CodigoViaje": box1.CodigoViaje,
-                "FechaCargaContenedor": max(box1.FechaCargaContenedor, box2.FechaCargaContenedor),
                 "FechaEntradaAlmacen": max(box1.FechaEntradaAlmacen, box2.FechaEntradaAlmacen),
                 "Expedicion": box1.Expedicion,
                 "Partida": box1.Partida + "/" + box2.Partida + "_W",
@@ -181,6 +191,11 @@ def join_box(
                 "Remontable": min(box1.Remontable, box2.Remontable),
                 "Volumen": box1.Volumen + box2.Volumen,
             }
+            # Only add the CodigoViaje if it exists in the original box
+            if 'CodigoViaje' in df.columns:
+                new_box["CodigoViaje"] = box1.CodigoViaje
+            if 'FechaCargaContenedor' in df.columns:
+                new_box["FechaCargaContenedor"] = max(box1.FechaCargaContenedor, box2.FechaCargaContenedor)
             hmap_entry = [
                 ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.LargoCm, box1.AnchoCm, box1.AltoCm, 2, box1.Remontable)),
                 ((box2.Partida, box2.Expedicion), (0, box1.AnchoCm, 0, box2.AnchoCm, box2.LargoCm, box2.AltoCm, 2, box2.Remontable))
@@ -199,8 +214,6 @@ def join_box(
             and abs(box1.AltoCm - box2.AltoCm) < height_tolerance
         ):
             new_box = {
-                "CodigoViaje": box1.CodigoViaje,
-                "FechaCargaContenedor": max(box1.FechaCargaContenedor, box2.FechaCargaContenedor),
                 "FechaEntradaAlmacen": max(box1.FechaEntradaAlmacen, box2.FechaEntradaAlmacen),
                 "Expedicion": box1.Expedicion,
                 "Partida": box1.Partida + "/" + box2.Partida + "_W",
@@ -212,6 +225,11 @@ def join_box(
                 "Remontable": min(box1.Remontable, box2.Remontable),
                 "Volumen": box1.Volumen + box2.Volumen,
             }
+            # Only add the CodigoViaje if it exists in the original box
+            if 'CodigoViaje' in df.columns:
+                new_box["CodigoViaje"] = box1.CodigoViaje
+            if 'FechaCargaContenedor' in df.columns:
+                new_box["FechaCargaContenedor"] = max(box1.FechaCargaContenedor, box2.FechaCargaContenedor)
             hmap_entry = [
                 ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.AnchoCm, box1.LargoCm, box1.AltoCm, 2, box1.Remontable)),
                 ((box2.Partida, box2.Expedicion), (0, box1.LargoCm, 0, box2.LargoCm, box2.AnchoCm, box2.AltoCm, 2, box2.Remontable))
@@ -230,8 +248,6 @@ def join_box(
             and abs(box1.AltoCm - box2.AltoCm) < height_tolerance
         ):
             new_box = {
-                "CodigoViaje": box1.CodigoViaje,
-                "FechaCargaContenedor": max(box1.FechaCargaContenedor, box2.FechaCargaContenedor),
                 "FechaEntradaAlmacen": max(box1.FechaEntradaAlmacen, box2.FechaEntradaAlmacen),
                 "Expedicion": box1.Expedicion,
                 "Partida": box1.Partida + "/" + box2.Partida + "_W",
@@ -243,6 +259,11 @@ def join_box(
                 "Remontable": min(box1.Remontable, box2.Remontable),
                 "Volumen": box1.Volumen + box2.Volumen,
             }
+            # Only add the CodigoViaje if it exists in the original box
+            if 'CodigoViaje' in df.columns:
+                new_box["CodigoViaje"] = box1.CodigoViaje
+            if 'FechaCargaContenedor' in df.columns:
+                new_box["FechaCargaContenedor"] = max(box1.FechaCargaContenedor, box2.FechaCargaContenedor)
             hmap_entry = [
                 ((box1.Partida, box1.Expedicion), (0, 0, 0, box1.AnchoCm, box1.LargoCm, box1.AltoCm, 2, box1.Remontable)),
                 ((box2.Partida, box2.Expedicion), (0, box1.LargoCm, 0, box2.AnchoCm, box2.LargoCm, box2.AltoCm, 2, box2.Remontable))
@@ -310,7 +331,6 @@ def join_box(
             if 0 < (container_width - total_width) < length_tolerance:
 
                 new_box = {
-                    "CodigoViaje": box1.CodigoViaje,
                     "FechaCargaContenedor": max(box1.FechaCargaContenedor, box2.FechaCargaContenedor, box3.FechaCargaContenedor),
                     "FechaEntradaAlmacen": max(box1.FechaEntradaAlmacen, box2.FechaEntradaAlmacen, box3.FechaEntradaAlmacen),
                     "Expedicion": box1.Expedicion,
@@ -323,6 +343,11 @@ def join_box(
                     "Remontable": min(box1.Remontable, box2.Remontable, box3.Remontable),
                     "Volumen": box1.Volumen + box2.Volumen + box3.Volumen,
                 }
+                # Only add the CodigoViaje if it exists in the original box
+                if 'CodigoViaje' in df.columns:
+                    new_box["CodigoViaje"] = box1.CodigoViaje
+                if 'FechaCargaContenedor' in df.columns:
+                    new_box["FechaCargaContenedor"] = max(box1.FechaCargaContenedor, box2.FechaCargaContenedor)
 
                 # Generate hashmap entry
                 hmap_entry = [

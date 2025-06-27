@@ -129,8 +129,8 @@ def organize_loading(
     container_dimensions: Tuple[int, int, int],
     df: pd.DataFrame,
     load_type: int = 1,
-    solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
-    PPs: List[Tuple[int, int, int, int, int, int, str]] = None,
+    partial_solution: List[Tuple[Tuple[str, str], Tuple[int, int, int, int, int, int]]] = None,
+    partial_PPs: List[Tuple[int, int, int, int, int, int, str]] = None,
     ):
 
     # Preprocess the boxes to generate bigger boxes, we also generate a hmap to be able to separate the boxes later
@@ -138,12 +138,13 @@ def organize_loading(
 
     # For each solution we store the solution and the boxes not loaded in a dictionary with the scores as the key
     all_solutions = {}
-    for i in tqdm(range(NUM_SOLUTIONS), desc="Generating solutions"):
-        pctg_volume, pctg_floor, x_axis, solution, not_loaded, PPs = RCH(container_dimensions, df, hmap, load_type, solution, PPs)
+    for _ in tqdm(range(NUM_SOLUTIONS), desc="Generating solutions"):
+        pctg_volume, pctg_floor, x_axis, solution, not_loaded, PPs = RCH(container_dimensions, df, hmap, load_type, partial_solution, partial_PPs)
         all_solutions[(pctg_volume, pctg_floor, x_axis)] = (solution, not_loaded, PPs)
 
     # We sort the keys depending on which score we want to minimize/maximize
     # This has to be here because we will use the metrics to sort the solutions
+    # TODO: Preguntar si aqui se puede incorporar tambien el x[2] (x_axis).
     volume_sorted_keys = sorted(all_solutions.keys(), key=lambda x: (x[0], x[1]), reverse=True)
     floor_sorted_keys = sorted(all_solutions.keys(), key=lambda x: (x[1], x[0]), reverse=True)
     x_sorted_keys = sorted(all_solutions.keys(), key=lambda x: (-x[2], x[1]), reverse=True)
